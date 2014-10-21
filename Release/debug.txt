@@ -1,0 +1,27 @@
+2013-11-19T13:31:38.0545ZMTConnect Adapter  Configure Tue Nov 19 08:31:38 2013
+
+2013-11-19T13:31:38.0545ZServiceName=MTConnectFanucAdapte
+2013-11-19T13:31:38.0545ZDebugLevel=0
+2013-11-19T13:31:38.0545ZProtocol=HSSB
+2013-11-19T13:31:38.0545ZCycleSleep=1000
+2013-11-19T13:31:38.0545ZFanucPort=0
+2013-11-19T13:31:38.0545ZResetAtMidnight=1
+2013-11-19T13:31:38.0546ZAgent will Reset from now    1.0000
+2013-11-19T13:31:54.0551ZiSeries::connect Using Protocol=HSSB
+2013-11-19T13:31:54.0551ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:54.0570ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 2013-11-19T13:31:54.0570ZiSeries::connect cnc_allclibhndl3 failed  Error on machine  : EW_MMCSYS - emm386 or mmcsys install error
+2013-11-19T13:31:54.0570ZiSeries::connect FAILED Power = OFF
+2013-11-19T13:31:54.0570ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:54.0570ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 2013-11-19T13:31:55.0570ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:55.0570ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 2013-11-19T13:31:56.0568ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:56.0568ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 2013-11-19T13:31:57.0567ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:57.0567ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 2013-11-19T13:31:58.0565ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:58.0565ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 2013-11-19T13:31:59.0563ZiSeries::connect HSSB cnc_allclibhndl2 Port=0
+2013-11-19T13:31:59.0563ZiSeries::connect cnc_allclibhndl Result:fffffffd
+ 
