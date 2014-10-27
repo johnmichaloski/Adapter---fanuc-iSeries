@@ -83,8 +83,10 @@ public:
   bool mHasValue;
 
   char mName[NAME_LEN];
+  char mDeviceName[NAME_LEN];
+
   // The name will be supplied later...
-  DeviceDatum(const char *aName);
+  DeviceDatum(const char *aName, const char *aDeviceName="");
 
   virtual ~DeviceDatum();
   
@@ -116,7 +118,7 @@ protected:
   char mValue[EVENT_VALUE_LEN];
 
 public:
-  Event(const char *aName);
+  Event(const char *aName, const char *aDeviceName="");
   bool setValue(const char *aValue);
   const char *getValue() { return mValue; }
   virtual char *toString(char *aBuffer, int aMaxLen);
@@ -178,7 +180,7 @@ protected:
   EPowerState mState;
   
 public:
-  PowerState(const char *aName) : DeviceDatum(aName) { }
+  PowerState(const char *aName, const char *aDeviceName="") : DeviceDatum(aName,aDeviceName) { }
   bool setValue(enum EPowerState aState);
   EPowerState getValue() { return mState; }
   virtual char *toString(char *aBuffer, int aMaxLen);
@@ -412,7 +414,7 @@ protected:
   bool mUnavailable;
 
 public:
-  Availability(const char *aName);
+  Availability(const char *aName, const char *aDeviceName="");
   virtual char *toString(char *aBuffer, int aMaxLen);
   bool available();
   virtual bool unavailable();  

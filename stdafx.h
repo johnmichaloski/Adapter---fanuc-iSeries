@@ -12,6 +12,7 @@
 
 #define iSERIES
 //#define iSERIESHSSB
+//#define SERIESHSSB
 #define iSERIESLAN
 //#define i160
 
@@ -19,8 +20,9 @@
 //#define F15M
 //#define FOi
 
-//#define SERIESHSSB
-
+#define ALARM
+//#define LOADS
+#define TOOLING
 
 #define BUFSIZE 256
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // some CString constructors will be explicit
@@ -47,3 +49,5 @@
 
 
 extern void ReportError(LPTSTR lpszFunction) ;
+
+#define RUNONCE  static long nLog##__LINE__=0; if( 0 == nLog##__LINE__++) 

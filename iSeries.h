@@ -33,6 +33,8 @@ public:
 	int getInfo();
 	int getVersion();
 	int getAlarmInfo();
+	int getToolInfo();
+	int getLoads();
 	int LogErrorMessage(std::string msg, short errcode);
 	int connect();
 	void disconnect();

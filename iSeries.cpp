@@ -314,42 +314,65 @@ int CiSeries::getPositions()
 		return -1;
 	}
 	GLogger.LogMessage("iSeries::getPositions Done\n", HEAVYDEBUG);
+	return EW_OK;
+}
 
-#ifdef LOADS
-	ODBSVLOAD sv[MAX_AXIS];
-	short num = _nAxes;
-	GLogger.LogMessage("iSeries::get Loads Enter\n", GLogger.HEAVYDEBUG);
-	try {
-		ret = cnc_rdsvmeter(mFlibhndl, &num, sv); // 15,16,18,21,0,powermate
+int CiSeries::getToolInfo()
+{
+	IODBTLCTL  toolinfo;
+	short	ret;
+#ifdef TOOLING
+	if(Globals.nToolingFlag)
+	{
+		ret = cnc_rdtlctldata(_adapter->mFlibhndl, &toolinfo); 
 		if(ret) 
 		{
 			LOGONCE GLogger.Fatal(StdStringFormat("CiSeries::cnc_rdsvmeter Failed\n"));
-			return;
-
+			return EW_OK;
 		}
-		if(num>0)
-			_adapter->SetMTCTagValue("Xload",StdStringFormat("%8.4f", ComputeValue(sv[0].svload.data, sv[0].svload.dec));
-		if(num>1) 
-			_adapter->SetMTCTagValue("Yload",StdStringFormat("%8.4f", ComputeValue(sv[1].svload.data, sv[1].svload.dec));
-		if(num>2)
-			_adapter->SetMTCTagValue("Zload",StdStringFormat("%8.4f", ComputeValue(sv[2].svload.data, sv[2].svload.dec));
-		//mXload.setValue(ComputeValue(sv[0].svload.data, sv[0].svload.dec));
-		//if(num>1) mYload.setValue(ComputeValue(sv[1].svload.data, sv[1].svload.dec));
-		//if(num>2) mZload.setValue(ComputeValue(sv[2].svload.data, sv[2].svload.dec));
+		if(toolinfo.slct&1)
+			_adapter->SetMTCTagValue("toolid", StdStringFormat("%d", toolinfo.used_tool));
+		else
+			_adapter->SetMTCTagValue("toolid", "");
+	}
+#endif
+	return EW_OK;
+}
 
-		for(int i=3; i< _nAxes; i++)
-		{
-			if(::toupper(sv[i].svload.name) == 'A')
-				_adapter->SetMTCTagValue("Aload",StdStringFormat("%8.4f", ComputeValue(sv[i].svload.data, sv[i].svload.dec));
-				//mAload.setValue(ComputeValue( sv[i].svload.data , sv[i].svload.dec));
-			if(::toupper(sv[i].svload.name) == 'B')
-				_adapter->SetMTCTagValue("Bload",StdStringFormat("%8.4f", ComputeValue(sv[i].svload.data, sv[i].svload.dec));
-				//mBload.setValue(ComputeValue( sv[i].svload.data , sv[i].svload.dec));
-			if(::toupper(sv[i].svload.name) == 'C')
-				_adapter->SetMTCTagValue("Cload",StdStringFormat("%8.4f", ComputeValue(sv[i].svload.data, sv[i].svload.dec));
-				//mCload.setValue(ComputeValue( sv[i].svload.data , sv[i].svload.dec));
-			//GLogger.LogMessage(StdStringFormat("CiSeries::getPositions cnc_rdsvmeter Axis %c Data=%d Dec=%d\n", sv[i].svload.name, sv[i].svload.data, sv[i].svload.dec), GLogger.HEAVYDEBUG);
 
+int CiSeries::getLoads()
+{
+#ifdef LOADS
+	short	ret;
+	if(Globals.nAxesLoadFlag)
+	{
+		ODBSVLOAD sv[MAX_AXIS];
+		short num = _adapter->_nAxes;
+		GLogger.LogMessage("iSeries::get Loads Enter\n", HEAVYDEBUG);
+		try {
+			ret = cnc_rdsvmeter(_adapter->mFlibhndl, &num, sv); // 15,16,18,21,0,powermate
+			if(ret) 
+			{
+				LOGONCE GLogger.Fatal(StdStringFormat("CiSeries::cnc_rdsvmeter Failed\n"));
+				return EW_OK;
+			}
+
+			if(num>0)
+				_adapter->SetMTCTagValue("Xload",StdStringFormat("%8.4f", ComputeValue(sv[0].svload.data, sv[0].svload.dec)));
+			if(num>1) 
+				_adapter->SetMTCTagValue("Yload",StdStringFormat("%8.4f", ComputeValue(sv[1].svload.data, sv[1].svload.dec)));
+			if(num>2)
+				_adapter->SetMTCTagValue("Zload",StdStringFormat("%8.4f", ComputeValue(sv[2].svload.data, sv[2].svload.dec)));
+
+			for(int i=3; i< _adapter->_nAxes; i++)
+			{
+				if(::toupper(sv[i].svload.name) == 'A')
+					_adapter->SetMTCTagValue("Aload",StdStringFormat("%8.4f", ComputeValue(sv[i].svload.data, sv[i].svload.dec)));
+				if(::toupper(sv[i].svload.name) == 'B')
+					_adapter->SetMTCTagValue("Bload",StdStringFormat("%8.4f", ComputeValue(sv[i].svload.data, sv[i].svload.dec)));
+				if(::toupper(sv[i].svload.name) == 'C')
+					_adapter->SetMTCTagValue("Cload",StdStringFormat("%8.4f", ComputeValue(sv[i].svload.data, sv[i].svload.dec)));
+			}
 		}
 	}
 	catch(...)
@@ -524,7 +547,7 @@ int CiSeries::getSpeeds()
 
 	GLogger.LogMessage("iSeries::getSpeeds done\n", 3);
 	GLogger.LogMessage("iSeries::getSpindleLoad\n", 5);
-#if 0
+#if 1
 
 	short nspd;
 	ret = cnc_rdnspdl(_adapter->mFlibhndl, &nspd);
@@ -602,21 +625,27 @@ int CiSeries::connect()
 	_adapter->mFlibhndl=0;
 	if(Globals.FanucProtocol == "HSSB")
 	{
-		GLogger.LogMessage(StdStringFormat("iSeries::connect HSSB cnc_allclibhndl2 Port=%d\n", _adapter->mDevicePort ), FATAL);
+		GLogger.Fatal(StdStringFormat("iSeries::connect HSSB cnc_allclibhndl2 Port=%d\n", _adapter->mDevicePort ));
 		//GLogger << FATAL  << "THIS EXECUTABLE DOES NOT HANDLE HSSB - EXCLUSIVELY Focas w/ Processing library for TCP/IP\n";
 #ifdef iSERIESHSSB
-		ret =  ::cnc_allclibhndl2(_adapter->mDevicePort,&_adapter->mFlibhndl);
+		ret =  ::cnc_allclibhndl2(_agent->mDevicePort,&_agent->mFlibhndl);
 #else
 		GLogger.Fatal( "THIS EXECUTABLE DOES NOT HANDLE LAN - EXCLUSIVELY Focas w/ Processing library for HSSB\n" );
 		return -1;
-#endif
+#endif		
 	}
 	else
 	{
 		
-		GLogger.LogMessage(StdStringFormat("iSeries::connect LAN cnc_allclibhndl3 IP=%s  Port=%d\n",Globals.FanucIpAddress.c_str(), _adapter->mDevicePort ), FATAL);
+		GLogger.Fatal(StdStringFormat("iSeries::connect LAN cnc_allclibhndl3 IP=%s  Port=%d\n",Globals.FanucIpAddress.c_str(), _adapter->mDevicePort ));
 #ifdef iSERIESLAN
+		try{
 		ret = ::cnc_allclibhndl3(Globals.FanucIpAddress.c_str(), _adapter->mDevicePort, 10, &_adapter->mFlibhndl);
+		}
+		catch(...)
+		{
+			GLogger.Fatal(StdStringFormat("iSeries::connect LAN cnc_allclibhndl3 Exception\n"));
+		}
 #else
 		GLogger.Fatal( "THIS EXECUTABLE DOES NOT HANDLE LAN - EXCLUSIVELY Focas w/ Processing library for HSSB\n");
 		return -1;
@@ -687,5 +716,8 @@ int CiSeries::LogErrorMessage(std::string msg, short errcode)
 	str<< std::endl;
 	//GLogger.LogMessage(str.str().c_str(), INFO);
 	LOGONCE GLogger.Fatal(str.str().c_str());
+	//_adapter->SetMTCTagValue("status", str.str() );
+	_adapter->errmsg= str.str() ;
+
 	return -1;
 }

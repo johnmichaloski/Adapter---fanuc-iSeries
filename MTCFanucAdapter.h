@@ -23,6 +23,7 @@
 #include "Config.h"
 #include "StdStringFcn.h"
 //#include "AppEventLog.h"
+#include "Globals.h"
 
 #include "adapter.hpp"
 #include "device_datum.hpp"
@@ -38,6 +39,7 @@ class FanucShdrAdapter : public Adapter, public MTConnectService
 public:
 	PowerState mPower;
 	Availability mAvail;
+	std::string errmsg;
 	struct Item
 	{
 		std::string _alias;
@@ -48,7 +50,7 @@ public:
 		std::string _lastvalue;
 		VARENUM vt;
 		Event  _event;
-		Item() : _event(""){}
+		Item(std::string name="", std::string devicename="") : _event(name.c_str(),devicename.c_str() ){}
 	};
 
 	struct ItemsType : public std::vector<Item * > 
@@ -108,21 +110,29 @@ public:
 	void AbortMsg( std::string err)
 	{
 		AtlTrace(err.c_str());
+		errmsg+=err;
 		//EventLogger.LogEvent(err);
-		ExitProcess(-1); 
+		GLogger.Fatal(err);
 		// 	std::string cmd = StdStringFormat("cmd /c net stop \"%s\" ",  adapter->name().c_str());        
 		// taskmgr.Launch(cmd, 000);
 	}
 	void AddItem(std::string tag, std::string value)
 	{
-		Item * item = new Item();
+		Item * item;
+		item = new Item(tag, Globals.szDeviceName);
+		//if(!Globals.szDeviceName.empty())
+		//{
+		//	strncpy(item->_event.mDeviceName,Globals.szDeviceName.c_str(),NAME_LEN);
+		//	item->_event.prefixName(item->_event.mDeviceName);
+		//}
+	
 		item->_tagname=tag;
 		item->_type="Event";
 		item->_lastvalue=item->_value=value;
 		item->_event.setValue(value.c_str());
 		item->_event.mHasValue=true;
 		addDatum(item->_event);
-		strncpy(item->_event.mName,tag.c_str(),NAME_LEN);
+//		strncpy(item->_event.mName,tag.c_str(),NAME_LEN);
 		items.push_back(item);
 	}
 	void SetMTCTagValue( std::string tag, std::string value)

@@ -170,17 +170,21 @@ HRESULT FanucShdrAdapter::Configure()
 			Globals._bResetAtMidnight = config.GetSymbolValue("CONFIG.ResetAtMidnight", "0").toNumber<int>();
 			Globals.FocasDelay = config.GetSymbolValue("CONFIG.FocasDelay", "1000").toNumber<int>();	
 			Globals.ProgramLogic= config.GetSymbolValue("CONFIG.ProgramLogic", "").c_str();
-			
+			Globals.nAlarmFlag = config.GetSymbolValue("CONFIG.AlarmFlag", "1").toNumber<int>();	
+			Globals.nAxesLoadFlag = config.GetSymbolValue("CONFIG.AxesLoadFlag", "0").toNumber<int>();	
+			Globals.nToolingFlag = config.GetSymbolValue("CONFIG.ToolingFlag", "0").toNumber<int>();	
 
 			//Globals.FanucProtocol= config.GetSymbolValue("CONFIG.FanucProtocol", "HSSB").c_str();
 			Globals.szServiceName= config.GetSymbolValue("CONFIG.ServiceName", "MTConnectFanucAdapte").c_str();
-			
+			Globals.szDeviceName= config.GetSymbolValue("CONFIG.DeviceName", "").c_str();
+				
 			_mainadapter->setName(Globals.szServiceName.c_str());
 			_mainadapter->mScanDelay=Globals.FocasDelay;
 
 			GLogger.DebugLevel()=config.GetSymbolValue("CONFIG.DebugLevel", "0").toNumber<int>();
 			GLogger.Timestamping()=true;
 
+			GLogger.Fatal(StdStringFormat( "DeviceName=%s\n" , Globals.szDeviceName.c_str()));
 			GLogger.Fatal(StdStringFormat( "ServiceName=%s\n" , Globals.szServiceName.c_str()));
 			GLogger.Fatal(StdStringFormat( "DebugLevel=%d\n" , GLogger.DebugLevel()));
 			GLogger.Fatal(StdStringFormat( "Protocol=%s\n" , Globals.FanucProtocol.c_str()));
@@ -188,6 +192,13 @@ HRESULT FanucShdrAdapter::Configure()
 			GLogger.Fatal(StdStringFormat( "FanucPort=%d\n" , Globals.FanucPort));
 			GLogger.Fatal(StdStringFormat( "ResetAtMidnight=%d\n" , Globals._bResetAtMidnight));
 			GLogger.Fatal(StdStringFormat( "IP=%s\n" , Globals.FanucIpAddress.c_str()));
+
+			GLogger.Fatal(StdStringFormat( "AlarmFlag=%d\n" , Globals.nAlarmFlag));
+			GLogger.Fatal(StdStringFormat( "AxesLoadFlag=%d\n" , Globals.nAxesLoadFlag));
+			GLogger.Fatal(StdStringFormat( "ToolingFlag=%d\n" , Globals.nToolingFlag));
+			Globals.nAlarmFlag = config.GetSymbolValue("CONFIG.AlarmFlag", "1").toNumber<int>();	
+			Globals.nAxesLoadFlag = config.GetSymbolValue("CONFIG.AxesLoadFlag", "0").toNumber<int>();	
+			Globals.nToolingFlag = config.GetSymbolValue("CONFIG.Tooling", "0").toNumber<int>();	
 		}
 	}
 	catch(...) 
@@ -209,7 +220,8 @@ void FanucShdrAdapter::Clear()
 	}
 	//SetMTCTagValue("power", "OFF" );
 	
-	mPower.setValue(PowerState::eOFF);
+	//mPower.setValue(PowerState::eOFF);
+	mPower.unavailable();
 	mAvail.unavailable();
 }
 
@@ -232,12 +244,34 @@ void FanucShdrAdapter::CreateItems()
 	AddItem("Vabs", "UNAVAILABLE" );
 	AddItem("Srpm", "UNAVAILABLE" );
 	AddItem("Sovr", "UNAVAILABLE" );
-	AddItem("Sload", "UNAVAILABLE" );
 	AddItem("path_feedrateovr", "UNAVAILABLE" );
 	AddItem("path_feedratefrt", "UNAVAILABLE" );
 	AddItem("heartbeat", "0" );
+	AddItem("Sload", "UNAVAILABLE" );
+	AddItem("status", "UNAVAILABLE" );
+	if(!Globals.szDeviceName.empty())
+	{
+		AddItem("DeviceName", "UNAVAILABLE" );
+		strncpy(mPower.mDeviceName,Globals.szDeviceName.c_str(),NAME_LEN);
+		strncpy(mAvail.mDeviceName,Globals.szDeviceName.c_str(),NAME_LEN);
+		mPower.prefixName(Globals.szDeviceName.c_str());
+		mAvail.prefixName(Globals.szDeviceName.c_str());
+	}
+
+#ifdef LOADS
+	AddItem("Xload", "UNAVAILABLE" );
+	AddItem("Yload", "UNAVAILABLE" );
+	AddItem("Zload", "UNAVAILABLE" );
+	AddItem("Aload", "UNAVAILABLE" );
+	AddItem("Bload", "UNAVAILABLE" );
+	AddItem("Cload", "UNAVAILABLE" );
+#endif
 #ifdef ALARM
 	AddItem("fault", "" );
+#endif
+#ifdef TOOLING
+	AddItem("toolid", "" );
+
 #endif
 }
 void FanucShdrAdapter::disconnect()
@@ -259,9 +293,17 @@ void FanucShdrAdapter::disconnect()
 
 void FanucShdrAdapter::gatherDeviceData()
 {
+	static char * function = "FanucShdrAdapter::gatherDeviceData()";
+
 	GLogger.LogMessage("FanucMTConnectAdapter::gatherDeviceData\n", HEAVYDEBUG);
 	_set_se_translator( trans_func );  // correct thread?
 	try {
+		if(!Globals.szDeviceName.empty())
+		{
+			RUNONCE SetMTCTagValue("DeviceName", Globals.szDeviceName );
+			//SetMTCTagValue("DeviceName", Globals.szDeviceName );
+		}
+		mAvail.available();
 
 #ifdef F15i
 		if (!mConnected)
@@ -300,6 +342,7 @@ void FanucShdrAdapter::gatherDeviceData()
 			}
 		}
 #else
+		errmsg.clear();
 		sHeartbeat=StdStringFormat("%d",heartbeat++);
 		SetMTCTagValue("heartbeat", sHeartbeat );
 
@@ -310,30 +353,48 @@ void FanucShdrAdapter::gatherDeviceData()
 			{
 				Clear();
 				update();
-				throw std::exception("Connect fail");
+				throw std::exception(StdStringFormat("Connect fail %s",errmsg.c_str()).c_str());
 			}
-			SetMTCTagValue("avail", "AVAILABLE" );
 
 		}
 		if (mConnected)
 		{	
-			SetMTCTagValue("power", "ON" );
+			mPower.setValue(PowerState::EPowerState::eON);
 			try {
 				_iSeries->saveStateInfo();
 				if(FAILED(_iSeries->getInfo()))
-					throw std::exception("getInfo fail");
-				if(FAILED(_iSeries->getLine()))
-					throw std::exception("getLine fail");
+					 GLogger.LogMessage(StdStringFormat("%s getInfo fail", function),3);
 				if(FAILED(_iSeries->getPositions()))
-					throw std::exception("getPositions fail");
+					GLogger.LogMessage(StdStringFormat("%s getPositions fail", function),3);
+				if(FAILED(_iSeries->getLine()))
+					throw std::exception(("getLine fail"+errmsg).c_str());
 				if(FAILED(_iSeries->getStatus()))
-					throw std::exception("getStatus fail");
+					throw std::exception(("getStatus fail"+errmsg).c_str());
 				if(FAILED(_iSeries->getSpeeds()))
-					throw std::exception("getSpeeds fail");
-#ifdef ALARM
-				if(FAILED(_iSeries->getAlarmInfo()))
-					throw std::exception("getAlarmInfo fail");
+					throw std::exception(("getSpeeds fail"+errmsg).c_str());
+#ifdef ALARM			
+				if(Globals.nAlarmFlag)
+				{
+					if(FAILED(_iSeries->getAlarmInfo()))
+						throw std::exception(("getAlarmInfo fail"+errmsg).c_str());
+				}
 #endif
+#ifdef LOADS
+				if(Globals.nAxesLoadFlag)
+				{
+					if(FAILED(_iSeries->getLoads()))
+						throw std::exception(("getLoads fail"+errmsg).c_str());
+				}
+#endif
+#ifdef TOOLING
+				if(Globals.nToolingFlag)
+				{
+					if(FAILED(_iSeries->getToolInfo()))
+						throw std::exception(("getToolInfo fail"+errmsg).c_str());
+				}
+#endif
+				SetMTCTagValue("status", "Running" );
+
 			}
 			catch(std::exception errmsg)
 			{
@@ -344,21 +405,26 @@ void FanucShdrAdapter::gatherDeviceData()
 				Clear();
 				update();
 				//EventLogger.LogEvent(tmp.str());
+				SetMTCTagValue("status", tmp.str() );
 			}
 		}
 #endif
 #endif
 		update();
 	}
-	catch(std::string errmsg)
+	catch(std::exception  errmsg)
 	{
 		disconnect();
-		ErrMsg(errmsg.c_str());
+		ErrMsg(errmsg.what());
+		SetMTCTagValue("status", StdStringFormat("iSeries::%s Failed %s", function, errmsg.what()));
+		update();
 	}
 	catch(...)
 	{
 		ErrMsg("Throw error in gatherDeviceData()\n");
 		disconnect();
+		SetMTCTagValue("status", StdStringFormat("iSeries::%s Failed ", function));
+		update();
 	}
 }
 void FanucShdrAdapter::update()
@@ -448,11 +514,11 @@ std::string FanucShdrAdapter::getProgramName(char * buf)
 }
 void FanucShdrAdapter::initialize(int aArgc, const char *aArgv[])
 {
-	this->CreateItems();
 	if(FAILED(this->Configure()))
 	{
-		throw;
+		throw std::exception(" FanucShdrAdapter::initialize failed");
 	}
+	this->CreateItems();
 	MTConnectService::initialize(aArgc, aArgv);
 	if (aArgc > 1) {
 		mPort = atoi(aArgv[1]);

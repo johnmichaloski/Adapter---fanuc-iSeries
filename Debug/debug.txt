@@ -1,20 +1,59 @@
-2014-10-21T17:10:31.0835ZMTConnect Adapter  Configure Tue Oct 21 13:10:31 2014
+2014-10-27T19:09:07.0666ZMTConnect Adapter  Configure Mon Oct 27 15:09:07 2014
 
-2014-10-21T17:10:31.0835ZServiceName=MTCFanucAdapter
-2014-10-21T17:10:31.0835ZDebugLevel=5
-2014-10-21T17:10:31.0835ZProtocol=LAN
-2014-10-21T17:10:31.0835ZCycleSleep=2000
-2014-10-21T17:10:31.0835ZFanucPort=8193
-2014-10-21T17:10:31.0851ZResetAtMidnight=0
-2014-10-21T17:10:31.0851ZIP=127.0.0.4
-2014-10-21T17:11:20.0773ZFanucMTConnectAdapter::gatherDeviceData
-2014-10-21T17:11:25.0532ZiSeries::connect Using Protocol=LAN
-2014-10-21T17:11:25.0532ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.4  Port=8193
-2014-10-21T17:11:35.0843ZiSeries::connect cnc_allclibhndl Result:fffffff0
- 2014-10-21T17:11:35.0843ZiSeries::connect cnc_allclibhndl3 failed  Error on machine 127.0.0.4 : EW_SOCKET - Windows socket error 
-2014-10-21T17:11:35.0843ZiSeries::connect FAILED Power = OFF
-2014-10-21T17:11:35.0843ZFanucMTConnectAdapter::gatherDeviceData
-2014-10-21T17:11:35.0843ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.4  Port=8193
-2014-10-21T17:11:45.0859ZiSeries::connect cnc_allclibhndl Result:fffffff0
- 2014-10-21T17:11:47.0871ZFanucMTConnectAdapter::gatherDeviceData
-2014-10-21T17:11:47.0871ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.4  Port=8193
+2014-10-27T19:09:07.0750ZDeviceName=M1
+2014-10-27T19:09:07.0751ZServiceName=MTCFanucAdapter
+2014-10-27T19:09:07.0751ZDebugLevel=0
+2014-10-27T19:09:07.0752ZProtocol=LAN
+2014-10-27T19:09:07.0753ZCycleSleep=2000
+2014-10-27T19:09:07.0753ZFanucPort=8193
+2014-10-27T19:09:07.0754ZResetAtMidnight=0
+2014-10-27T19:09:07.0754ZIP=127.0.0.1
+2014-10-27T19:09:07.0755ZAlarmFlag=1
+2014-10-27T19:09:07.0756ZAxesLoadFlag=0
+2014-10-27T19:09:07.0757ZToolingFlag=1
+2014-10-27T19:09:17.0829ZiSeries::connect Using Protocol=LAN
+2014-10-27T19:09:17.0830ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:09:28.0369ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:09:28.0370ZiSeries::connect cnc_allclibhndl3 failed  Error on machine 127.0.0.1 : EW_SOCKET - Windows socket error 
+2014-10-27T19:09:28.0371ZiSeries::connect FAILED Power = OFF
+2014-10-27T19:09:28.0373ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:09:38.0379ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:09:48.0385ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:09:58.0392ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:09:58.0397ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:10:08.0404ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:10:10.0410ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:10:20.0414ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:10:22.0416ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:10:32.0424ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:10:34.0428ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:10:44.0433ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:10:46.0435ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:10:56.0441ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:10:58.0447ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:11:08.0452ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:11:10.0455ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:11:20.0462ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:11:22.0467ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:11:32.0474ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:11:34.0479ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:11:44.0771ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:11:46.0776ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:11:56.0784ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:11:58.0789ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:12:10.0187ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:12:12.0191ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:12:22.0208ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:12:24.0214ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:12:36.0144ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:12:38.0147ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:12:49.0997ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:12:52.0001ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:13:02.0008ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:13:04.0012ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:13:14.0019ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:13:16.0024ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:13:26.0029ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:13:28.0033ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193
+2014-10-27T19:13:38.0041ZiSeries::connect cnc_allclibhndl Result:fffffff0
+ 2014-10-27T19:13:40.0045ZiSeries::connect LAN cnc_allclibhndl3 IP=127.0.0.1  Port=8193

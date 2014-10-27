@@ -41,11 +41,15 @@ static const char *sUnavailable = "UNAVAILABLE";
 /*
  * Data value methods.
  */
-DeviceDatum::DeviceDatum(const char *aName)
+DeviceDatum::DeviceDatum(const char *aName, const char *aDeviceName)
 {
   strncpy(mName, aName, NAME_LEN);
+  strncpy(mDeviceName, aDeviceName, NAME_LEN);
   mName[NAME_LEN - 1] = '\0';
+  mDeviceName[NAME_LEN - 1] = '\0';
   strcpy(mOrigName, mName);
+  if(strlen(mDeviceName)>0)
+	  prefixName(mDeviceName);
   mChanged = false;
   mHasValue = false;
 }
@@ -115,8 +119,8 @@ void DeviceDatum::appendText(char *aBuffer, char *aValue, int aMaxLen)
 /*
  * Event methods
  */
-Event::Event(const char* aName) :
-  DeviceDatum(aName)
+Event::Event(const char* aName,const char* aDeviceName) :
+  DeviceDatum(aName,aDeviceName)
 {
   mValue[0] = 0;
 }
@@ -644,8 +648,8 @@ bool PathPosition::unavailable()
  *  Availability methods
  */
 
-Availability::Availability(const char *aName)
-  : DeviceDatum(aName)
+Availability::Availability(const char *aName, const char *aDeviceName)
+  : DeviceDatum(aName,aDeviceName)
 {
   mHasValue = true;
   mUnavailable = false;

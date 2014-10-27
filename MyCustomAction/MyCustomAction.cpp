@@ -218,12 +218,13 @@ extern "C" UINT __stdcall Install(MSIHANDLE hInstall)
 	HRESULT hRes = ::CoInitialize(NULL);
 	std::string path,ipaddr,type,config,shdrPort,fanucPort;
 	std::string status;
+	std::string deviceName;
 
 	try {
 		ipaddr="0";
 		type="1";
 		fanucPort="0"; // hssb is port 0
-
+		deviceName="";
 		TCHAR szBuffer1[MAX_PATH] = {'0'};
 		DWORD dwLen = MAX_PATH;
 		status="MsiGetProperty";
@@ -257,7 +258,9 @@ extern "C" UINT __stdcall Install(MSIHANDLE hInstall)
 			//	config=tokens[1];    
 			if(tokens[0]=="ShdrPort") // no change necessary if using csv, program will stip out
 				shdrPort=Trim(tokens[1]);    
-		}
+			if(tokens[0]=="Device") // no change necessary if using csv, program will stip out
+				deviceName=Trim(tokens[1]);    
+			}
 
 		SetFilePermission(path+"debug.txt") ;
 		SetFilePermission(path+"MTCFanucAdapter.ini") ;
@@ -272,7 +275,21 @@ extern "C" UINT __stdcall Install(MSIHANDLE hInstall)
 		std::string contents; 
 		ReadFile(path+"MTCFanucAdapter.ini", contents);
 		ReplacePattern(contents, "FanucIpAddress=", "\n", "FanucIpAddress=" + ipaddr + "\n");
+		fanucPort=Trim(fanucPort);
 		ReplacePattern(contents, "FanucPort=", "\n", "FanucPort=" + fanucPort +"\n"); 
+#if 0
+		if(fanucPort=="0")
+		{
+			ReplacePattern(contents, "Protocol=", "\n", "Protocol=HSSB\n"); 
+		}
+		else
+		{
+			ReplacePattern(contents, "Protocol=", "\n", "Protocol=LAN\n"); 
+		}
+#endif
+		if(!deviceName.empty())
+			ReplacePattern(contents, "DeviceName=", "\n", "DeviceName=" + deviceName +"\n"); 
+
 		//ReplacePattern(contents, "HttpPort=", "\n", "HttpPort=" + shdrPort +"\n"); 
 		//ReplacePattern(contents, "ServiceName=", "\n", "ServiceName=" + serviceName +"\n"); 
 		WriteFile(path+"MTCFanucAdapter.ini",contents);

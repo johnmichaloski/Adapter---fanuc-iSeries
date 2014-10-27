@@ -25,14 +25,18 @@ public:
 	//std::vector<std::string>  fanucports;
 	bool _bResetAtMidnight;
 	std::string szServiceName;
+	std::string szDeviceName;
 	std::string ProgramLogic;
-
+	int nAlarmFlag;
+	int nAxesLoadFlag;
+	int nToolingFlag;
 	CGlobals() 
 	{
 #ifdef iSERIESLAN
 		FanucPort=8193;
 		FanucProtocol="LAN";
 		FanucIpAddress="000.000.000.000";
+		nAlarmFlag=nAxesLoadFlag=nToolingFlag=0;
 #else
 		FanucPort=0;
 		FanucProtocol="HSSB";

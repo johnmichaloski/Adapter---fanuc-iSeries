@@ -6,6 +6,12 @@ $Target=[TARGETDIR]$IpValue=[EDITA1]$FanucPort=[EDITA2]$ShdrPort=[EDITA3]
 	CConfigDlg dlg;
 	INT_PTR res = dlg.DoModal();
 
+2014-10-23T18:38:14.0530Z|power|OFF|avail|UNAVAILABLE|block|UNAVAILABLE|line|UNA
+VAILABLE|program|UNAVAILABLE|controllermode|UNAVAILABLE|execution|UNAVAILABLE|Xa
+bs|UNAVAILABLE|Yabs|UNAVAILABLE|Zabs|UNAVAILABLE|Aabs|UNAVAILABLE|Babs|UNAVAILAB
+LE|Cabs|UNAVAILABLE|Uabs|UNAVAILABLE|Vabs|UNAVAILABLE|Srpm|UNAVAILABLE|Sovr|UNAV
+AILABLE|path_feedrateovr|UNAVAILABLE|path_feedratefrt|UNAVAILABLE|heartbeat|UNAV
+AILABLE|Sload|UNAVAILABLE|fault|UNAVAILABLE|toolid|UNAVAILABLE
 	
 
 	//contents=ReplaceOnce(contents,"IP=127.0.0.1", "IP=" + ipaddr);
