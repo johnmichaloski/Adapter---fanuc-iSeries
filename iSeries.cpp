@@ -628,7 +628,7 @@ int CiSeries::connect()
 		GLogger.Fatal(StdStringFormat("iSeries::connect HSSB cnc_allclibhndl2 Port=%d\n", _adapter->mDevicePort ));
 		//GLogger << FATAL  << "THIS EXECUTABLE DOES NOT HANDLE HSSB - EXCLUSIVELY Focas w/ Processing library for TCP/IP\n";
 #ifdef iSERIESHSSB
-		ret =  ::cnc_allclibhndl2(_agent->mDevicePort,&_agent->mFlibhndl);
+		ret =  ::cnc_allclibhndl2(_adapter->mDevicePort,&_adapter->mFlibhndl);
 #else
 		GLogger.Fatal( "THIS EXECUTABLE DOES NOT HANDLE LAN - EXCLUSIVELY Focas w/ Processing library for HSSB\n" );
 		return -1;

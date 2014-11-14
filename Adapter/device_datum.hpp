@@ -67,9 +67,11 @@ const int EVENT_VALUE_LEN = 512;
  */
 class DeviceDatum {
 protected:
-  /* The name of the Data Value */
-  char mOrigName[NAME_LEN];
+  /* The name of the Device  */
   char mNativeUnits[UNITS_LEN];
+
+ /* The name of the Data Value */
+  char mOrigName[NAME_LEN];
   
   /* A changed flag to indicated that the value has changed since last append. */
   bool mChanged;

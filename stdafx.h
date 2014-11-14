@@ -11,9 +11,9 @@
 #include <tchar.h>
 
 #define iSERIES
-//#define iSERIESHSSB
+#define iSERIESHSSB
 //#define SERIESHSSB
-#define iSERIESLAN
+//#define iSERIESLAN
 //#define i160
 
 //#define F15i
